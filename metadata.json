@@ -1,0 +1,8 @@
+{
+  "name": "Hệ Thống Quản Lý Toàn Diện",
+  "description": "Một ứng dụng web để quản lý toàn diện các hoạt động kinh doanh bao gồm bán hàng, CRM, kho, kế toán và báo cáo. Giao diện được thiết kế hiện đại, dễ sử dụng với màu xanh dương làm chủ đạo.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "prompt": ""
+}

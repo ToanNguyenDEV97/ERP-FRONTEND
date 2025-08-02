@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hệ Thống Quản Lý Toàn Diện</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                '50': '#f0f9ff',
+                '100': '#e0f2fe',
+                '200': '#bae6fd',
+                '300': '#7dd3fc',
+                '400': '#38bdf8',
+                '500': '#0ea5e9',
+                '600': '#0284c7',
+                '700': '#0369a1',
+                '800': '#075985',
+                '900': '#0c4a6e',
+                '950': '#082f49',
+              },
+              slate: {
+                '50': '#f8fafc',
+                '100': '#f1f5f9',
+                '200': '#e2e8f0',
+                '300': '#cbd5e1',
+                '400': '#94a3b8',
+                '500': '#64748b',
+                '600': '#475569',
+                '700': '#334155',
+                '800': '#1e293b',
+                '900': '#0f172a',
+                '950': '#020617',
+              }
+            }
+          }
+        }
+      }
+    </script>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.1.0/",
+    "react": "https://esm.sh/react@^19.1.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
+    "recharts": "https://esm.sh/recharts@^2.12.0",
+    "@google/genai": "https://esm.sh/@google/genai",
+    "marked": "https://esm.sh/marked@^12.0.0",
+    "html5-qrcode": "https://esm.sh/html5-qrcode@^2.3.8",
+    "jsbarcode": "https://esm.sh/jsbarcode",
+    "qrcode": "https://esm.sh/qrcode",
+    "papaparse": "https://esm.sh/papaparse"
+  }
+}
+</script>
+<style>
+    :root {
+        color-scheme: light;
+    }
+    :root.dark {
+        color-scheme: dark;
+    }
+    body {
+        background-color: #f1f5f9; /* slate-100 */
+        color: #334155; /* slate-700 */
+    }
+    .dark body {
+        background-color: #0f172a; /* slate-900 */
+        color: #cbd5e1; /* slate-300 */
+    }
+    .modal-content-container {
+      animation: fadeIn 0.3s ease-out;
+    }
+    .modal-content {
+        animation: scaleIn 0.3s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes scaleIn {
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes toast-in {
+        from {
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+    .animate-toast-in {
+        animation: toast-in 0.3s ease-out forwards;
+    }
+    .line-clamp-1 {
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 1;
+    }
+    .line-clamp-2 {
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+    }
+
+    /* AI Chatbot styles */
+    .ai-chat-window {
+        animation: slide-in-up 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    }
+
+    @keyframes slide-in-up {
+        from {
+            opacity: 0;
+            transform: translateY(30px) scale(0.98);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+    
+    .ai-chat-response table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+    .ai-chat-response th, .ai-chat-response td {
+        border: 1px solid #cbd5e1; /* slate-300 */
+        padding: 0.5rem 0.75rem;
+        text-align: left;
+    }
+     .ai-chat-response th {
+        background-color: #f1f5f9; /* slate-100 */
+        font-weight: 600;
+    }
+    .dark .ai-chat-response th, .dark .ai-chat-response td {
+         border-color: #475569; /* slate-600 */
+    }
+     .dark .ai-chat-response th {
+        background-color: #1e293b; /* slate-800 */
+    }
+    .ai-chat-response ul {
+        list-style-type: disc;
+        padding-left: 1.5rem;
+    }
+     .ai-chat-response ol {
+        list-style-type: decimal;
+        padding-left: 1.5rem;
+    }
+    .ai-chat-response p {
+        margin-bottom: 0.5rem;
+    }
+    .ai-chat-response strong, .ai-chat-response b {
+        font-weight: 600;
+    }
+
+    @media print {
+        html, body {
+            background-color: white !important;
+            color: black !important;
+        }
+        body > div#root > div:not(.printable-area-container),
+        .no-print {
+            display: none !important;
+        }
+
+        body, #root {
+            min-height: auto;
+        }
+        
+        .printable-area-container {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: auto;
+            padding: 0;
+            margin: 0;
+            z-index: 9999;
+        }
+
+        .printable-area {
+            visibility: visible;
+            box-shadow: none !important;
+            border: none !important;
+            padding: 20px !important;
+            font-size: 12px;
+        }
+        
+        /* Barcode/QR printing styles */
+        .barcode-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 columns for A4 paper */
+            gap: 0;
+            page-break-before: auto;
+            page-break-after: auto;
+        }
+        .barcode-label {
+            page-break-inside: avoid !important;
+            border: 1px dashed #ccc;
+            padding: 5mm;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            overflow: hidden;
+            height: 48.5mm; /* A4 3x7 label */
+            width: 70mm; /* A4 3x7 label */
+        }
+        .barcode-label canvas,
+        .barcode-label svg {
+            max-width: 100%;
+            height: auto !important;
+            max-height: 50%;
+        }
+        .barcode-label .product-name {
+            font-size: 8pt;
+            font-weight: bold;
+            margin-top: 4px;
+            line-height: 1.2;
+            word-break: break-word;
+        }
+        .barcode-label .product-sku {
+            font-size: 8pt;
+            font-family: monospace;
+        }
+        .barcode-label .product-price {
+            font-size: 9pt;
+            font-weight: bold;
+        }
+    }
+</style>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
