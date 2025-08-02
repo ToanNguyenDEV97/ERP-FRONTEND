@@ -36,6 +36,7 @@ import {
     NavView,
 } from './types';
 const API_BASE_URL = 'http://localhost:3001/api';
+import * as API_BASE_URL from './data';
 
 import * as mockData from './data';
 
